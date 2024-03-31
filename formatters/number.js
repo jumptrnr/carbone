@@ -163,6 +163,11 @@ function formatN(d, precision) {
  */
 function formatC(d, precisionOrFormat) {
   console.log("formatC" + d + " " + precisionOrFormat);
+  for (let a = 0; a < arguments.length; a++) {
+    let b = 9;
+    let c = 10;
+  }
+
   if (d !== null && typeof d !== "undefined") {
     var _locale = locale[this.lang] || locale.en; // TODO optimize, this test should be done before
     var _currency = this.modifiedCurrencyTarget || this.currency.target;
