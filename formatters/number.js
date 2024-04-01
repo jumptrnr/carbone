@@ -161,33 +161,49 @@ function formatN(d, precision) {
  * @return {String}                   return converted values
  *
  */
-function formatC(d, precisionOrFormat) {
-  if (d !== null) console.log("formatC", d, precisionOrFormat);
+function formatC(d, precisionOrFormat, currencyCode) {
+  if (d !== null) console.log("formatC d:", d);
+  if (precisionOrFormat !== null)
+    console.log("formatC precisionOrFormat:", precisionOrFormat);
+  if (currencyCode !== null) console.log("formatC currencyCode:", currencyCode);
+
+  // Default currency to USD if not provided
+  var _currency = currencyCode || "USD";
+
   if (d !== null && typeof d !== "undefined") {
-    var _locale = locale[this.lang] || locale.en; // TODO optimize, this test should be done before
-    var _currency = this.modifiedCurrencyTarget || this.currency.target;
+    var _locale = locale[this.lang] || locale.en;
+
+    // Access currency information
     var _currencyInfo = currency[_currency];
+    if (!_currencyInfo) {
+      console.error("Invalid or unsupported currency code:", _currency);
+      return d; // Optionally handle this case more gracefully
+    }
+
     var _precision = _currencyInfo.precision;
     var _customPrec = parseInt(precisionOrFormat, 10);
-    var _formatFn = _locale.currency.L;
+
+    // Determine precision or formatting function
     if (!isNaN(_customPrec)) {
       _precision = _customPrec;
-    } else if (_locale.currency[precisionOrFormat] instanceof Function) {
+    } else if (
+      typeof precisionOrFormat === "string" &&
+      _locale.currency[precisionOrFormat] instanceof Function
+    ) {
       _formatFn = _locale.currency[precisionOrFormat];
+    } else {
+      _formatFn = _locale.currency.L; // Default formatting function
     }
-    var _valueRaw = _format(convCurr.call(this, d), _locale.number, _precision);
-    // reset modifiedCurrencyTarget for next use
-    this.modifiedCurrencyTarget = null;
-    return _formatFn(
-      _valueRaw,
-      _currencyInfo.symbol,
-      _currencyInfo.minSymbol,
-      // eslint-disable-next-line eqeqeq
-      d != 1 ? _currencyInfo.major + "s" : _currencyInfo.major,
-      // eslint-disable-next-line eqeqeq
-      d != 1 ? _currencyInfo.minor + "s" : _currencyInfo.minor,
-      _currencyInfo.name
+
+    // Convert and format the value
+    var _valueRaw = _format(
+      convCurr.call(this, d, _currency),
+      _locale.number,
+      _precision
     );
+
+    // Prepend the currency symbol and return the result
+    return _currencyInfo.symbol + _valueRaw;
   }
   return d;
 }
