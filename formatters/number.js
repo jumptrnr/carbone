@@ -124,7 +124,7 @@ function formatN(d, precision) {
 }
 
 /**
- *
+ * ADL Modified to look more like carbone cloud api ie d, precisionOrFormat, currencyCode
  * @version 1.2.0
  *
  * Format currency numbers
@@ -162,11 +162,6 @@ function formatN(d, precision) {
  *
  */
 function formatC(d, precisionOrFormat, currencyCode) {
-  if (d !== null) console.log("formatC d:", d);
-  if (precisionOrFormat !== null)
-    console.log("formatC precisionOrFormat:", precisionOrFormat);
-  if (currencyCode !== null) console.log("formatC currencyCode:", currencyCode);
-
   // Default currency to USD if not provided
   var _currency = currencyCode || "USD";
 
