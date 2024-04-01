@@ -1,5 +1,5 @@
-const locale   = require('./_locale.js');
-const currency = require('./_currency.js');
+const locale = require("./_locale.js");
+const currency = require("./_currency.js");
 
 /**
  * Convert from one currency to another
@@ -23,12 +23,12 @@ const currency = require('./_currency.js');
  * @param  {String} source   [optional] currency of source data ('USD'). By default it equals `options.currencySource`
  * @return {String}          return converted values
  */
-function convCurr (d, target, source) {
-  var _target        = target ? target : this.currency.target;
-  var _source        = source ? source : this.currency.source;
-  var _targetRate    = this.currency.rates[_target] || 1;
-  var _sourceRate    = this.currency.rates[_source] || 1;
-  var _valueInEuro   = d / _sourceRate;
+function convCurr(d, target, source) {
+  var _target = target ? target : this.currency.target;
+  var _source = source ? source : this.currency.source;
+  var _targetRate = this.currency.rates[_target] || 1;
+  var _sourceRate = this.currency.rates[_source] || 1;
+  var _valueInEuro = d / _sourceRate;
   this.modifiedCurrencyTarget = _target;
   return _valueInEuro * _targetRate;
   // raseError(this.currency[_target] === undefined, 'Unknown rate for currency target "'+_target+'"');
@@ -49,17 +49,20 @@ function convCurr (d, target, source) {
  * @param  {Number} precision number of decimal
  * @return {Number}
  */
-function round (num, precision) {
-  if (!('' + num).includes('e')) {
-    return +(Math.round(num + 'e+' + precision)  + 'e-' + precision);
-  }
-  else {
-    var _arr = ('' + num).split('e');
-    var _sig = '';
+function round(num, precision) {
+  if (!("" + num).includes("e")) {
+    return +(Math.round(num + "e+" + precision) + "e-" + precision);
+  } else {
+    var _arr = ("" + num).split("e");
+    var _sig = "";
     if (+_arr[1] + precision > 0) {
-      _sig = '+';
+      _sig = "+";
     }
-    return +(Math.round(+_arr[0] + 'e' + _sig + (+_arr[1] + precision)) + 'e-' + precision);
+    return +(
+      Math.round(+_arr[0] + "e" + _sig + (+_arr[1] + precision)) +
+      "e-" +
+      precision
+    );
   }
 }
 
@@ -84,12 +87,16 @@ function round (num, precision) {
  * @param  {Number} precision
  * @return {String}
  */
-function _format (value, format, precision = 3) {
-  var _re    = '\\d(?=(\\d{' + (format.group) + '})+' + (precision > 0 ? '\\D' : '$') + ')';
+function _format(value, format, precision = 3) {
+  var _re =
+    "\\d(?=(\\d{" + format.group + "})+" + (precision > 0 ? "\\D" : "$") + ")";
   var _value = round(value, precision);
-  var _num   = _value.toFixed(Math.max(0, ~~precision));
+  var _num = _value.toFixed(Math.max(0, ~~precision));
 
-  return (format.decimal ? _num.replace('.', format.decimal) : _num).replace(new RegExp(_re, 'g'), '$&' + (format.separator || ','));
+  return (format.decimal ? _num.replace(".", format.decimal) : _num).replace(
+    new RegExp(_re, "g"),
+    "$&" + (format.separator || ",")
+  );
 }
 
 /**
@@ -108,8 +115,8 @@ function _format (value, format, precision = 3) {
  * @param  {Number} precision  [optional] Number of decimals
  * @return {String} return     converted values
  */
-function formatN (d, precision) {
-  if (d !== null && typeof d !== 'undefined') {
+function formatN(d, precision) {
+  if (d !== null && typeof d !== "undefined") {
     var _locale = locale[this.lang] || locale.en;
     return _format(d, _locale.number, precision);
   }
@@ -154,31 +161,31 @@ function formatN (d, precision) {
  * @return {String}                   return converted values
  *
  */
-function formatC (d, precisionOrFormat) {
-  if (d !== null) console.log("formatC");
-  if (d !== null && typeof d !== 'undefined') {
-    var _locale       = locale[this.lang] || locale.en; // TODO optimize, this test should be done before
-    var _currency     = this.modifiedCurrencyTarget || this.currency.target;
+function formatC(d, precisionOrFormat) {
+  if (d !== null) console.log("formatC", d, precisionOrFormat);
+  if (d !== null && typeof d !== "undefined") {
+    var _locale = locale[this.lang] || locale.en; // TODO optimize, this test should be done before
+    var _currency = this.modifiedCurrencyTarget || this.currency.target;
     var _currencyInfo = currency[_currency];
-    var _precision    = _currencyInfo.precision;
-    var _customPrec   = parseInt(precisionOrFormat, 10);
-    var _formatFn     = _locale.currency.L;
+    var _precision = _currencyInfo.precision;
+    var _customPrec = parseInt(precisionOrFormat, 10);
+    var _formatFn = _locale.currency.L;
     if (!isNaN(_customPrec)) {
       _precision = _customPrec;
-    }
-    else if ( _locale.currency[precisionOrFormat] instanceof Function ) {
+    } else if (_locale.currency[precisionOrFormat] instanceof Function) {
       _formatFn = _locale.currency[precisionOrFormat];
     }
-    var _valueRaw  = _format(convCurr.call(this, d), _locale.number, _precision);
+    var _valueRaw = _format(convCurr.call(this, d), _locale.number, _precision);
     // reset modifiedCurrencyTarget for next use
     this.modifiedCurrencyTarget = null;
-    return _formatFn(_valueRaw,
+    return _formatFn(
+      _valueRaw,
       _currencyInfo.symbol,
       _currencyInfo.minSymbol,
       // eslint-disable-next-line eqeqeq
-      (d != 1 ? _currencyInfo.major + 's' : _currencyInfo.major),
+      d != 1 ? _currencyInfo.major + "s" : _currencyInfo.major,
       // eslint-disable-next-line eqeqeq
-      (d != 1 ? _currencyInfo.minor + 's' : _currencyInfo.minor),
+      d != 1 ? _currencyInfo.minor + "s" : _currencyInfo.minor,
       _currencyInfo.name
     );
   }
@@ -196,8 +203,8 @@ function formatC (d, precisionOrFormat) {
  * @param {Number} value Value to add
  * @return {Number} Result
  */
-function add (d, value) {
-  if (d !== null && typeof d !== 'undefined') {
+function add(d, value) {
+  if (d !== null && typeof d !== "undefined") {
     return parseFloat(d) + parseFloat(value);
   }
   return d;
@@ -214,8 +221,8 @@ function add (d, value) {
  * @param {Number} value Value to substract
  * @return {Number} Result
  */
-function sub (d, value) {
-  if (d !== null && typeof d !== 'undefined') {
+function sub(d, value) {
+  if (d !== null && typeof d !== "undefined") {
     return parseFloat(d) - parseFloat(value);
   }
   return d;
@@ -232,8 +239,8 @@ function sub (d, value) {
  * @param {Number} value Value to multiply
  * @return {Number} Result
  */
-function mul (d, value) {
-  if (d !== null && typeof d !== 'undefined') {
+function mul(d, value) {
+  if (d !== null && typeof d !== "undefined") {
     return parseFloat(d) * parseFloat(value);
   }
   return d;
@@ -250,22 +257,22 @@ function mul (d, value) {
  * @param {Number} value Value to divide
  * @return {Number} Result
  */
-function div (d, value) {
-  if (d !== null && typeof d !== 'undefined' && parseFloat(value) !== 0) {
+function div(d, value) {
+  if (d !== null && typeof d !== "undefined" && parseFloat(value) !== 0) {
     return parseFloat(d) / parseFloat(value);
   }
   return d;
 }
 
 module.exports = {
-  formatN  : formatN,
-  formatC  : formatC,
-  convCurr : convCurr,
-  round    : round,
-  add      : add,
-  sub      : sub,
-  mul      : mul,
-  div      : div,
+  formatN: formatN,
+  formatC: formatC,
+  convCurr: convCurr,
+  round: round,
+  add: add,
+  sub: sub,
+  mul: mul,
+  div: div,
 
   /**
    * Converts a number to an INT
@@ -274,7 +281,7 @@ module.exports = {
    *
    * @return {Number}
    */
-  int : function (d) {
+  int: function (d) {
     return parseInt(d, 10);
   },
 
@@ -285,8 +292,8 @@ module.exports = {
    *
    * @return {String}
    */
-  toEN : function (d) {
-    return (d + '').replace(/,/g, '.');
+  toEN: function (d) {
+    return (d + "").replace(/,/g, ".");
   },
 
   /**
@@ -297,7 +304,7 @@ module.exports = {
    * @param  {Number} nb
    * @return {String}
    */
-  toFixed : function (d, nb) {
+  toFixed: function (d, nb) {
     return parseFloat(d).toFixed(nb);
   },
 
@@ -308,8 +315,7 @@ module.exports = {
    *
    * @return {String}
    */
-  toFR : function (d) {
-    return (d + '').replace(/\./g, ',');
-  }
-
+  toFR: function (d) {
+    return (d + "").replace(/\./g, ",");
+  },
 };
