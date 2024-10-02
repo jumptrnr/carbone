@@ -15,13 +15,15 @@
     "docx",
     "odt",
     "ods",
-    "json"
+    "json",
+    "pptx"
   ],
   "scripts": {
     "test": "./node_modules/.bin/mocha test --timeout 100000 --exit",
     "lint": "eslint ./lib/**.js ./test/**.js ./formatters/**.js",
     "lint:fix": "eslint ./lib/**.js ./test/**.js ./formatters/**.js --fix",
-    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push origin $PACKAGE_VERSION && git push github-origin $PACKAGE_VERSION"
+    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push origin $PACKAGE_VERSION && git push github-origin $PACKAGE_VERSION",
+    "test:pptx": "node test_pptx.js"
   },
   "dependencies": {
     "dayjs": "=1.10.7",
