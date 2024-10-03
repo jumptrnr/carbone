@@ -32,14 +32,14 @@ const renderConfigs = [
   },
   
   
-*/ {
+ {
     templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.odt",
     options: { convertTo: "docx" },
     outputName: "result.docx",
-  },
+  },*/
   {
     templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.odp",
-    options: { convertTo: "pptx" },
+    options: { convertTo: "pptx", lang: "en-us" },
     outputName: "result.pptx",
   },
   // Add more configurations as needed
@@ -63,6 +63,12 @@ function renderReports() {
     }
 
     const config = renderConfigs[currentIndex];
+
+    console.log("Calling carbone.render with the following parameters:");
+    console.log("Template Path:", config.templatePath);
+    //console.log("Data:", JSON.stringify(data, null, 2));
+    console.log("Options:", config.options);
+
     carbone.render(
       config.templatePath,
       data,
