@@ -39,7 +39,11 @@ const renderConfigs = [
   },*/
   {
     templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.odp",
-    options: { convertTo: "pptx", lang: "en-us" },
+    options: {
+      convertTo: "pptx",
+      lang: "en-us",
+      reportName: "FreshTracksFundReport",
+    },
     outputName: "result.pptx",
   },
   // Add more configurations as needed
