@@ -1,11 +1,11 @@
 {
   "name": "carbone",
   "description": "Fast, Simple and Powerful report generator. Injects JSON and produces PDF, DOCX, XLSX, ODT, PPTX, ODS, ...!",
-  "version": "3.4.2",
+  "version": "3.5.6",
   "bin": "bin/carbone",
   "main": "./lib",
   "author": "David Grelaud",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://carbone.io",
   "keywords": [
     "report",
@@ -15,26 +15,35 @@
     "docx",
     "odt",
     "ods",
-    "json",
-    "pptx"
+    "json"
   ],
   "scripts": {
     "test": "./node_modules/.bin/mocha test --timeout 100000 --exit",
+    "test:render": "npm run test -- --grep 'Carbone Render Tests'",
+    "test:render:docx": "npm run test -- --grep 'Docx to Docx'",
+    "test:render:pdf": "npm run test -- --grep 'Docx to PDF'",
+    "test:render:html": "npm run test -- --grep 'HTML to PDF'",
     "lint": "eslint ./lib/**.js ./test/**.js ./formatters/**.js",
     "lint:fix": "eslint ./lib/**.js ./test/**.js ./formatters/**.js --fix",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push origin $PACKAGE_VERSION && git push github-origin $PACKAGE_VERSION",
-    "test:pptx": "node test_pptx.js"
+    "testal": "node test_pptx.js"
   },
   "dependencies": {
-    "dayjs": "=1.10.7",
-    "debug": "=4.3.2",
+    "axios": "=1.7.2",
+    "dayjs": "=1.11.11",
+    "dayjs-timezone-iana-plugin": "=0.1.0",
+    "debug": "=4.3.5",
+    "html-minifier": "=4.0.0",
+    "html2json": "=1.0.2",
+    "jsdom": "=24.1.1",
+    "sanitize-html": "=2.13.0",
     "which": "=2.0.2",
-    "xml2js": "^0.6.2",
     "yauzl": "=2.10.0",
     "yazl": "=2.5.1"
   },
   "devDependencies": {
-    "mocha": "=9.1.3"
+    "mocha": "=9.2.2",
+    "pdf-visual-diff": "=0.9.0"
   },
   "engines": {
     "node": ">= 12.14.0"
