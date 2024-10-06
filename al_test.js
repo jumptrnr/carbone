@@ -31,21 +31,24 @@ const renderConfigs = [
     outputName: "result.docx",
   },
   
-  
- {
-    templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.odt",
-    options: { convertTo: "docx" },
-    outputName: "result.docx",
-  },*/
+  */
   {
-    templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.odp",
+    templatePath: "../freshtracksback_s4/templates/FreshtracksAllCompanies.odt",
+    options: { convertTo: "pdf" },
+    outputName: "result.pdf",
+  },
+  /*
+  {
+    templatePath:
+      "../freshtracksback_s4/templates/FreshtracksFundPresentation.odp",
     options: {
       convertTo: "pptx",
       lang: "en-us",
       reportName: "FreshTracksFundReport",
     },
     outputName: "result.pptx",
-  },
+  },*/
+
   // Add more configurations as needed
 ];
 

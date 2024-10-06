@@ -1,4 +1,8 @@
 const data = {
+  chartImage:
+    "https://storage.googleapis.com/freshtracks-public-folder/other/27-1716562409359-logo.png",
+  fund_logo_imgurl:
+    "https://storage.googleapis.com/freshtracks_public/other/AICo-1727718322184.png",
   company_data: [
     {
       id: "5511",
@@ -2299,8 +2303,6 @@ const data = {
       total_remaining_value_to_lps: 7054033.869808001,
     },
   ],
-  fund_logo_imgurl:
-    "https://storage.googleapis.com/freshtracks_public/other/undefined-1727718319981.png",
   format: "pptx",
   donutChart_base64:
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==",
