@@ -1,5 +1,6 @@
 const carbone = require("./lib/index"); // Adjust this path if necessary
 const fs = require("fs");
+const path = require("path");
 
 // Import the data
 const data = require("./data.js");
@@ -16,41 +17,69 @@ if (data && data.company_data) {
 
 // Array of render configurations
 const renderConfigs = [
-  /*
   {
-    
+    enabled: false,
     templatePath:
       "../../freshtracksback_s4/templates/FreshTracksFundReport.odt",
     options: { convertTo: "pdf" },
-    outputName: "result.pdf",
+    outputName: "resultFromODT.pdf",
   },
-  
   {
+    enabled: false,
     templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.docx",
     options: { convertTo: "docx" },
-    outputName: "result.docx",
+    outputName: "resultFromDOCX.docx",
   },
-  
-  */
   {
+    enabled: true,
     templatePath: "../freshtracksback_s4/templates/FreshtracksAllCompanies.odt",
     options: { convertTo: "pdf" },
-    outputName: "result.pdf",
+    outputName: "resultReportFromODT.pdf",
   },
-  /*
   {
+    enabled: true,
+    templatePath: "../freshtracksback_s4/templates/FreshtracksAllCompanies.odt",
+    options: { convertTo: "docx" },
+    outputName: "resultReportFromDOCX.docx",
+  },
+  {
+    enabled: false,
     templatePath:
-      "../freshtracksback_s4/templates/FreshtracksFundPresentation.odp",
+      "../freshtracksback_s4/templates/FreshtracksNewPresentationBulletTest.odp",
+    options: {
+      convertTo: "pdf",
+      lang: "en-us",
+      reportName: "FreshTracksFundReport",
+    },
+    outputName: "resultPresentationFromODP.pdf",
+  },
+  {
+    enabled: false,
+    templatePath: "../freshtracksback_s4/templates/FreshtracksPresentation.odp",
     options: {
       convertTo: "pptx",
       lang: "en-us",
       reportName: "FreshTracksFundReport",
     },
-    outputName: "result.pptx",
-  },*/
-
-  // Add more configurations as needed
+    outputName: "resultPresentationFromODP.pptx",
+  },
+  {
+    enabled: false,
+    templatePath: "../freshtracksback_s4/templates/FreshtracksPresentation.odp",
+    options: {
+      convertTo: "odp",
+      lang: "en-us",
+      reportName: "FreshTracksFundReport",
+    },
+    outputName: "resultPresentationFromODP.odp",
+  },
 ];
+
+// Ensure output directory exists
+const outputDir = "test/output";
+if (!fs.existsSync(outputDir)) {
+  fs.mkdirSync(outputDir, { recursive: true });
+}
 
 // Function to handle errors
 function handleError(err) {
@@ -60,20 +89,22 @@ function handleError(err) {
 
 // Function to render reports
 function renderReports() {
+  // Filter enabled configurations
+  const enabledConfigs = renderConfigs.filter((config) => config.enabled);
   let currentIndex = 0;
 
   function renderNext() {
-    if (currentIndex >= renderConfigs.length) {
+    if (currentIndex >= enabledConfigs.length) {
       console.log("All reports generated successfully.");
       process.exit(0);
       return;
     }
 
-    const config = renderConfigs[currentIndex];
+    const config = enabledConfigs[currentIndex];
+    const outputPath = path.join(outputDir, config.outputName);
 
     console.log("Calling carbone.render with the following parameters:");
     console.log("Template Path:", config.templatePath);
-    //console.log("Data:", JSON.stringify(data, null, 2));
     console.log("Options:", config.options);
 
     carbone.render(
@@ -84,11 +115,9 @@ function renderReports() {
         if (err) {
           handleError(err);
         }
-        fs.writeFileSync(config.outputName, result);
+        fs.writeFileSync(outputPath, result);
         console.log(
-          `${config.options.convertTo.toUpperCase()} report generated successfully: ${
-            config.outputName
-          }`
+          `${config.options.convertTo.toUpperCase()} report generated successfully: ${outputPath}`
         );
         currentIndex++;
         renderNext();

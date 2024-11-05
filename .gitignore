@@ -44,3 +44,5 @@ coverage/*
 asset/*
 0formation/*
 
+# test
+test/output/*
