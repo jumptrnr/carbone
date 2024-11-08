@@ -31,7 +31,7 @@ const renderConfigs = [
     outputName: "resultFromDOCX.docx",
   },
   {
-    enabled: true,
+    enabled: false,
     templatePath: "../freshtracksback_s4/templates/FreshtracksAllCompanies.odt",
     options: { convertTo: "pdf" },
     outputName: "resultReportFromODT.pdf",

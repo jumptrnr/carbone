@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<a href="https://www.npmjs.com/package/carbone">
+  <a href="https://www.npmjs.com/package/carbone">
     <img src="https://badgen.net/npm/dt/carbone" alt="npm badge">
   </a>
   <a href="https://www.npmjs.com/package/carbone">
@@ -28,7 +28,6 @@
   </a>
 </p>
 
-
 <p><b>⚡️ Fast, Simple and Powerful report generator</b> in any format PDF, DOCX, XLSX, ODT, PPTX, ODS, XML, CSV using templates and your JSON data as input !</p>
 
 ### News 2024/02
@@ -47,8 +46,7 @@ Activating community features in the Docker Edition was much easier. This editio
 
 The Open Source Edition will be updated in v4 when the v5 will be released. The open source edition is always one major version behind (v3+)
 
-Feel free to contact us [on the chat](https://carbone.io) if you need further information or  **professional support**. 
-
+Feel free to contact us [on the chat](https://carbone.io) if you need further information or **professional support**.
 
 ## Table of content
 
@@ -56,13 +54,19 @@ README language: 🇨🇳 [简体中文](./doc/README.zh-cn.md), 🇺🇸 [Engli
 
 <!-- MarkdownTOC -->
 
+- [Table of content](#table-of-content)
 - [Features](#features)
 - [How it works?](#how-it-works)
 - [Minimum Requirements](#minimum-requirements)
+  - [Optional](#optional)
 - [Getting started](#getting-started)
   - [Basic sample](#basic-sample)
   - [PDF generation, document conversion](#pdf-generation-document-conversion)
-- [More examples](#more-examples)
+    - [1 - install LibreOffice](#1---install-libreoffice)
+      - [on OSX](#on-osx)
+      - [on Ubuntu Server \& Ubuntu desktop](#on-ubuntu-server--ubuntu-desktop)
+    - [2 - generate PDF](#2---generate-pdf)
+- [More examples](#more-examples) - [Nested repetition in a docx document and spreadsheet](#nested-repetition-in-a-docx-document-and-spreadsheet)
 - [API Reference](#api-reference)
 - [Command line tools](#command-line-tools)
 - [Issues](#issues)
@@ -76,15 +80,15 @@ README language: 🇨🇳 [简体中文](./doc/README.zh-cn.md), 🇺🇸 [Engli
 
 ## Features
 
-  - 🍏  **Extremely simple** : Create templates with LibreOffice™, Google Docs, Microsoft Office™, TinyMCE, CKEditor, ...
-  - 🎨 **Unlimited design** : The limit is your document editor: pagination, headers, footers, tables...
-  - 📝 **Convert documents** : thanks to the integrated document converter
-  - 📐 **Unique template engine** : Insert JSON-like markers `{d.companyName}` directly in your document
-  - ⭐️ **Flexible** : Use any XML documents as a template: docx, odt, ods, xlsx, html, pptx, odp, custom xml files...
-  - 🚀 **Future-proof** : A powerful XML-agnostic algorithm understands what to do without knowing XML document specifications
-  - 🌈 **Multilingual** : One template, multiple languages. Update translation files automatically
-  - 💎 **Format data** : Use built-in date and number formatters or create your own in Javascript
-  - 🏎 **Fast** : Manage multiple LibreOffice threads for document conversion, optimized code generation for each report
+- 🍏 **Extremely simple** : Create templates with LibreOffice™, Google Docs, Microsoft Office™, TinyMCE, CKEditor, ...
+- 🎨 **Unlimited design** : The limit is your document editor: pagination, headers, footers, tables...
+- 📝 **Convert documents** : thanks to the integrated document converter
+- 📐 **Unique template engine** : Insert JSON-like markers `{d.companyName}` directly in your document
+- ⭐️ **Flexible** : Use any XML documents as a template: docx, odt, ods, xlsx, html, pptx, odp, custom xml files...
+- 🚀 **Future-proof** : A powerful XML-agnostic algorithm understands what to do without knowing XML document specifications
+- 🌈 **Multilingual** : One template, multiple languages. Update translation files automatically
+- 💎 **Format data** : Use built-in date and number formatters or create your own in Javascript
+- 🏎 **Fast** : Manage multiple LibreOffice threads for document conversion, optimized code generation for each report
 
 ## How it works?
 
@@ -92,12 +96,11 @@ Carbone is a mustache-like template engine `{d.companyName}`.
 
 Template language documentation : https://carbone.io/documentation.html
 
-- The template can be any XML-document coming from LibreOffice™ or Microsoft Office™  (ods, docx, odt, xslx...)
+- The template can be any XML-document coming from LibreOffice™ or Microsoft Office™ (ods, docx, odt, xslx...)
 - The injected data must be a JSON object or array, coming directly from your existing APIs for example
 
 Carbone analyzes your template and inject data in the document. The generated document can be exported as is, or converted to another format (PDF, ...) using LibreOffice if it is installed on the system.
 Carbone is working only on the server-side.
-
 
 ## Minimum Requirements
 
@@ -107,7 +110,6 @@ Carbone is working only on the server-side.
 #### Optional
 
 - LibreOffice server if you want to use the document converter and generate PDF. Without LibreOffice, you can still generate docx, xlsx, pptx, odt, ods, odp, html as long as your template is in the same format.
-
 
 ## Getting started
 
@@ -122,25 +124,29 @@ Carbone is working only on the server-side.
 2 - Copy-paste this code in a new JS file, and execute it with node
 
 ```javascript
-  const fs = require('fs');
-  const carbone = require('carbone');
+const fs = require("fs");
+const carbone = require("carbone");
 
-  // Data to inject
-  var data = {
-    firstname : 'John',
-    lastname : 'Doe'
-  };
+// Data to inject
+var data = {
+  firstname: "John",
+  lastname: "Doe",
+};
 
-  // Generate a report using the sample template provided by carbone module
-  // This LibreOffice template contains "Hello {d.firstname} {d.lastname} !"
-  // Of course, you can create your own templates!
-  carbone.render('./node_modules/carbone/examples/simple.odt', data, function(err, result){
+// Generate a report using the sample template provided by carbone module
+// This LibreOffice template contains "Hello {d.firstname} {d.lastname} !"
+// Of course, you can create your own templates!
+carbone.render(
+  "./node_modules/carbone/examples/simple.odt",
+  data,
+  function (err, result) {
     if (err) {
       return console.log(err);
     }
     // write the result
-    fs.writeFileSync('result.odt', result);
-  });
+    fs.writeFileSync("result.odt", result);
+  }
+);
 ```
 
 ### PDF generation, document conversion
@@ -153,7 +159,6 @@ Carbone does a lot of thing for you behind the scene:
 - manages multiple LibreOffice workers to maximize performance (configurable number of workers)
 - automatically restarts LibreOffice worker if it crashes or does not respond
 - job queue, re-try conversion three times if something bad happen
-
 
 ##### 1 - install LibreOffice
 
@@ -203,71 +208,87 @@ And now, you can use the converter, by passing options to render method.
 > Once started, LibreOffice stays on to make new conversions faster
 
 ```javascript
-  var data = {
-    firstname : 'John',
-    lastname : 'Doe'
-  };
+var data = {
+  firstname: "John",
+  lastname: "Doe",
+};
 
-  var options = {
-    convertTo : 'pdf' //can be docx, txt, ...
-  };
+var options = {
+  convertTo: "pdf", //can be docx, txt, ...
+};
 
-  carbone.render('./node_modules/carbone/examples/simple.odt', data, options, function(err, result){
+carbone.render(
+  "./node_modules/carbone/examples/simple.odt",
+  data,
+  options,
+  function (err, result) {
     if (err) return console.log(err);
-    fs.writeFileSync('result.pdf', result);
+    fs.writeFileSync("result.pdf", result);
     process.exit(); // to kill automatically LibreOffice workers
-  });
+  }
+);
 ```
-
 
 ## More examples
 
 ##### Nested repetition in a docx document and spreadsheet
 
 ```javascript
+var data = [
+  {
+    movieName: "Matrix",
+    actors: [
+      {
+        firstname: "Keanu",
+        lastname: "Reeves",
+      },
+      {
+        firstname: "Laurence",
+        lastname: "Fishburne",
+      },
+      {
+        firstname: "Carrie-Anne",
+        lastname: "Moss",
+      },
+    ],
+  },
+  {
+    movieName: "Back To The Future",
+    actors: [
+      {
+        firstname: "Michael",
+        lastname: "J. Fox",
+      },
+      {
+        firstname: "Christopher",
+        lastname: "Lloyd",
+      },
+    ],
+  },
+];
 
-  var data = [
-    {
-      movieName : 'Matrix',
-      actors    : [{
-        firstname : 'Keanu',
-        lastname  : 'Reeves'
-      },{
-        firstname : 'Laurence',
-        lastname  : 'Fishburne'
-      },{
-        firstname : 'Carrie-Anne',
-        lastname  : 'Moss'
-      }]
-    },
-    {
-      movieName : 'Back To The Future',
-      actors    : [{
-        firstname : 'Michael',
-        lastname  : 'J. Fox'
-      },{
-        firstname : 'Christopher',
-        lastname  : 'Lloyd'
-      }]
-    }
-  ];
-
-  carbone.render('./node_modules/carbone/examples/movies.docx', data, function(err, result){
+carbone.render(
+  "./node_modules/carbone/examples/movies.docx",
+  data,
+  function (err, result) {
     if (err) return console.log(err);
-    fs.writeFileSync('movies_result.docx', result);
-  });
+    fs.writeFileSync("movies_result.docx", result);
+  }
+);
 
-  carbone.render('./node_modules/carbone/examples/flat_table.ods', data, function(err, result){
+carbone.render(
+  "./node_modules/carbone/examples/flat_table.ods",
+  data,
+  function (err, result) {
     if (err) return console.log(err);
-    fs.writeFileSync('flat_table_result.ods', result);
-  });
+    fs.writeFileSync("flat_table_result.ods", result);
+  }
+);
 ```
-
 
 ## API Reference
 
 To check out the **[api reference](https://carbone.io/api-reference.html#carbone-js-api)** and the **[documentation](https://carbone.io/documentation)**, visit [carbone.io](http://carbone.io).
-
 
 ## Command line tools
 
@@ -287,8 +308,8 @@ The roadmap is pinned on the github issues list.
 
 Report generation speed (without network latency), using a basic one-page DOCX template:
 
-  - ~ `10 ms / report` without document conversion (analyzing, injection, rendering)
-  - ~ `50 ms / report` with a PDF conversion (100 loops, 3 LibreOffice workers, without cold-start)
+- ~ `10 ms / report` without document conversion (analyzing, injection, rendering)
+- ~ `50 ms / report` with a PDF conversion (100 loops, 3 LibreOffice workers, without cold-start)
 
 On a MacBook Pro Mid-2015, 2,2 Ghz i7, 16Go.
 
@@ -308,23 +329,21 @@ The Community Edition is one major version behind the Enterprise Edition. This r
 
 [2% percent](https://help.carbone.io/en-us/article/2-for-charitable-purposes-59iyg3) of our hosted solution revenues goes to charity
 
-
 ## Contributors
 
 Thanks to all Carbone contributors (random order)
 
-  - Florian Bezagu
-  - Matthieu Robin
-  - Arnaud Lelièvre
-  - Maxime Vincent
-  - Enzo Ghemard
-  - Jordan Nourry
-  - Etienne Rouillard
-  - Guillaume Chevaux
-  - Fabien Bigant
-  - Maxime Magne
-  - Vincent Bertin
-  - Léo Labruyère
-  - Aurélien Kermabon
-  - [Steeve Payraudeau](https://github.com/steevepay)
-
+- Florian Bezagu
+- Matthieu Robin
+- Arnaud Lelièvre
+- Maxime Vincent
+- Enzo Ghemard
+- Jordan Nourry
+- Etienne Rouillard
+- Guillaume Chevaux
+- Fabien Bigant
+- Maxime Magne
+- Vincent Bertin
+- Léo Labruyère
+- Aurélien Kermabon
+- [Steeve Payraudeau](https://github.com/steevepay)
