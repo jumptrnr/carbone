@@ -38,7 +38,8 @@ const renderConfigs = [
   },
   {
     enabled: true,
-    templatePath: "../freshtracksback_s4/templates/FreshtracksAllCompanies.odt",
+    templatePath:
+      "../freshtracksback_s4/templates/FreshtracksAllCompanies.docx",
     options: { convertTo: "docx" },
     outputName: "resultReportFromDOCX.docx",
   },
