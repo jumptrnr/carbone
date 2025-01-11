@@ -37,22 +37,19 @@ def UnoProps(**args):
 
 
 def send(message):
-    print(f"Sending message: {message}")
     sys.stdout.write(message)
     sys.stdout.flush()
 
 
 def sendErrorOrExit(code):
+    ### Tell to python that we want to modify the global variable
     global nbConsecutiveAttemptOpeningDocument
-    print(f"Error occurred with code: {code}")
-    print(f"Attempt number: {nbConsecutiveAttemptOpeningDocument + 1} of {nbConsecutiveAttemptOpeningDocumentMax}")
     nbConsecutiveAttemptOpeningDocument += 1
     if nbConsecutiveAttemptOpeningDocument < nbConsecutiveAttemptOpeningDocumentMax:
-        send(code)
+        send(code)  # The document could not be opened.
     else:
-        print("Max attempts reached, exiting with code 254")
         nbConsecutiveAttemptOpeningDocument = 0
-        sys.exit(254)
+        sys.exit(254) # Restart everything
 
 
 def retryloop(attempts, timeout, delay=1):
@@ -71,18 +68,10 @@ def retryloop(attempts, timeout, delay=1):
 
 
 def convert(message):
-    print(f"Starting conversion with message: {message}")
     global nbConsecutiveAttemptOpeningDocument
-    try:
-        messageSplit = shlex.split(message)
-        fileOption = parser.parse_args(args=messageSplit)
-        print(f"Input file: {fileOption.input}")
-        print(f"Output file: {fileOption.output}")
-        print(f"Format: {fileOption.format}")
-    except Exception as e:
-        print(f"Error parsing message: {str(e)}")
-        sendErrorOrExit('400')
-        return
+    ### Parse the message
+    messageSplit = shlex.split(message)
+    fileOption = parser.parse_args(args=messageSplit)
 
     document = None
     inputprops = UnoProps(Hidden=True, ReadOnly=True, UpdateDocMode=QUIET_UPDATE)
@@ -91,8 +80,7 @@ def convert(message):
 
     try:
         document = desktop.loadComponentFromURL( inputurl , "_blank", 0, inputprops)
-    except Exception as e:
-        print(f"Error loading document: {str(e)}")
+    except:
         sendErrorOrExit('400')
         return
 
@@ -162,13 +150,10 @@ try:
   initParams = parser.parse_args()
 
   ### Connection to LibreOffice
-  print(f"Initializing with pipe: {initParams.pipe}")
   connectionStr = "pipe,name=%s;urp;StarOffice.ComponentContext" % (initParams.pipe)
   context = uno.getComponentContext()
-  print("Got component context")
   svcmgr = context.ServiceManager
   resolver = svcmgr.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", context)
-  print("Created URL resolver")
 
   ### Try to open a connection with LibreOffice. Let 60 seconds to start LibreOffice before restarting it.
   for retry in retryloop(attempts=60, timeout=60, delay=1):
@@ -188,9 +173,6 @@ try:
   ### Send Ready signal to NodeJS and listen for document conversion
   send('204')
 
-  ### log before listening
-  print("Listening for document conversion")
-
   listen()
 
   ## Catch exit exception to avoid backtrace
@@ -199,5 +181,4 @@ except KeyboardInterrupt:
     sys.exit(0)
   except SystemExit:
     os._exit(0)
-
 
