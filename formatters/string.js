@@ -1,12 +1,11 @@
-const toMd5 = require('./md5');
-const html2xml = require('../lib/html2xml');
-const sanitizeHtml = require('sanitize-html');
-const minify = require('html-minifier').minify;
-const jsdom = require("jsdom").JSDOM;
+const toMd5 = require("./md5");
+const html2xml = require("../lib/html2xml");
+const sanitizeHtml = require("sanitize-html");
+const minify = require("html-minifier").minify;
 
 const LINEBREAK = {
-  odt  : '<text:line-break/>',
-  docx : '</w:t><w:br/><w:t>'
+  odt: "<text:line-break/>",
+  docx: "</w:t><w:br/><w:t>",
 };
 
 /**
@@ -22,8 +21,8 @@ const LINEBREAK = {
  * @param  {String} d string to parse
  * @return {String}   lower case on all letters, or `d` is it not a string
  */
-function lowerCase (d) {
-  if (typeof d === 'string') {
+function lowerCase(d) {
+  if (typeof d === "string") {
     return d.toLowerCase();
   }
   return d;
@@ -42,8 +41,8 @@ function lowerCase (d) {
  * @param  {String} d string to parse
  * @return {String}   upper case on all letters, or `d` is it not a string
  */
-function upperCase (d) {
-  if (typeof d === 'string') {
+function upperCase(d) {
+  if (typeof d === "string") {
     return d.toUpperCase();
   }
   return d;
@@ -63,8 +62,8 @@ function upperCase (d) {
  * @param  {String} d string to parse
  * @return {String}   upper case on the first letter, or `d` is it not a string
  */
-function ucFirst (d) {
-  if (typeof d === 'string') {
+function ucFirst(d) {
+  if (typeof d === "string") {
     return d.charAt(0).toUpperCase() + d.slice(1);
   }
   return d;
@@ -84,8 +83,8 @@ function ucFirst (d) {
  * @param  {String} d string to parse
  * @return {String}   upper case on all words, or `d` is it not a string
  */
-function ucWords (d) {
-  if (typeof d === 'string') {
+function ucWords(d) {
+  if (typeof d === "string") {
     return d.replace(/(?:^|\s)\S/g, function (a) {
       return a.toUpperCase();
     });
@@ -107,7 +106,7 @@ function ucWords (d) {
  * @param  {String}  message     text to print
  * @return {String} `message` is always printed
  */
-function print (d, message) {
+function print(d, message) {
   return message;
 }
 
@@ -133,7 +132,7 @@ function print (d, message) {
  * @param  {String}         type   enum name passed in `options` of `carbone.render(data, options)`
  * @return {String}         return human readable enum or original value if it cannot be converted
  */
-function convEnum (d, type) {
+function convEnum(d, type) {
   if (this.enum !== undefined) {
     var _type = this.enum[type];
     if (_type !== undefined && _type[d] !== undefined) {
@@ -142,7 +141,6 @@ function convEnum (d, type) {
   }
   return d;
 }
-
 
 /**
  * Removes accents from text
@@ -157,13 +155,12 @@ function convEnum (d, type) {
  * @param  {String} d string to parse
  * @return {String}   string without accent
  */
-function unaccent (d) {
-  if (typeof d === 'string') {
-    return d.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+function unaccent(d) {
+  if (typeof d === "string") {
+    return d.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
   return d;
 }
-
 
 /**
  * Convert carriage return `\\r\\n` and line feed `\\n` to XML-specific code in rendered document
@@ -183,8 +180,8 @@ function unaccent (d) {
  * @param  {Integer|String} d
  * @return {String}         return "XML carriage return" for odt and docx
  */
-function convCRLF (d) {
-  if (typeof d === 'string') {
+function convCRLF(d) {
+  if (typeof d === "string") {
     var _lineBreak = LINEBREAK[this.extension];
     if (_lineBreak) {
       return d.replace(/\r?\n/g, _lineBreak);
@@ -210,8 +207,8 @@ convCRLF.canInjectXML = true;
  * @param {Integer} end Zero-based index before which to end extraction
  * @return {String} return the formatted string
  */
-function substr (d, begin, end) {
-  if (typeof d === 'string') {
+function substr(d, begin, end) {
+  if (typeof d === "string") {
     return d.slice(begin, end);
   }
   return d;
@@ -235,15 +232,15 @@ function substr (d, begin, end) {
  *                               within the targetLength, it will be truncated from the end. The default value is " "
  * @return {String} return the padded left string
  */
-function padl (d, targetLength, padString) {
-  var _padString = ' ';
+function padl(d, targetLength, padString) {
+  var _padString = " ";
   if (padString !== undefined) {
     _padString = padString;
   }
-  if (typeof d === 'string') {
+  if (typeof d === "string") {
     return d.padStart(targetLength, _padString);
   }
-  if (typeof d === 'number') {
+  if (typeof d === "number") {
     return d.toString().padStart(targetLength, _padString);
   }
   return d;
@@ -267,35 +264,38 @@ function padl (d, targetLength, padString) {
  *                               within the targetLength, it will be truncated from the end. The default value is " "
  * @return {String} return the padded right string
  */
-function padr (d, targetLength, padString) {
-  var _padString = ' ';
+function padr(d, targetLength, padString) {
+  var _padString = " ";
   if (padString !== undefined) {
     _padString = padString;
   }
-  if (typeof d === 'string') {
+  if (typeof d === "string") {
     return d.padEnd(targetLength, _padString);
   }
-  if (typeof d === 'number') {
+  if (typeof d === "number") {
     return d.toString().padEnd(targetLength, _padString);
   }
   return d;
 }
 
-function md5 (d) {
+function md5(d) {
   return toMd5(d);
 }
 
-function prepend (d, toPrepend) {
+function prepend(d, toPrepend) {
   return toPrepend + d;
 }
 
 // credit: https://github.com/CryptoNinjaGeek/carbone.git
 function processLists(html) {
-  html = html.replace(/(<li>)(.+?)(<ul>)/, '$1$2</li><li>$3');
+  // html = html.replace(/(<li>)(.+?)(<ul>)/, '$1$2</li><li>$3');
   const lists = html.match(/(<li>)(?!(<ul>|<ol>))(.*?)(<\/li>)/g);
-  if(!lists) return html;
-  lists.forEach(list => {
-    html = html.replace(list, list.replace(/(<li>)(?!(<ul>|<ol>))(.*?)(<\/li>)/, '$1<p>$3</p>$4'));
+  if (!lists) return html;
+  lists.forEach((list) => {
+    html = html.replace(
+      list,
+      list.replace(/(<li>)(?!(<ul>|<ol>))(.*?)(<\/li>)/, "$1<p>$3</p>$4")
+    );
   });
   return html;
 }
@@ -308,36 +308,44 @@ const sanitizeOptions = {
 };
 
 function flattenListItems(html) {
-  const dom = new jsdom(html);
-  const lis = dom.window.document.querySelectorAll('li');
-  lis.forEach(li => li.innerHTML = li.textContent);
-  return dom.window.document.body.innerHTML;
+  return html.replace(/<li>([\s\S]*?)<\/li>/g, function (match, content) {
+    // Remove nested lists first
+    const withoutNestedLists = content.replace(
+      /<(ul|ol)>[\s\S]*?<\/(ul|ol)>/g,
+      ""
+    );
+    // Then remove any remaining HTML tags
+    const cleanContent = withoutNestedLists
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .trim();
+    return `<li>${cleanContent}</li>`;
+  });
 }
 
 // credit: https://github.com/CryptoNinjaGeek/carbone.git
 function html(d) {
-  if (!d) return '';
+  if (!d) return "";
   const sanitized = sanitizeHtml(d, sanitizeOptions);
   const flatten = flattenListItems(sanitized);
   const minified = minify(flatten, { collapseWhitespace: true });
   const processedHtml = processLists(minified);
-  return 'html:' + Buffer.from(processedHtml).toString('base64') + ':html';
+  return "html:" + Buffer.from(processedHtml).toString("base64") + ":html";
 }
 
 module.exports = {
-  lowerCase : lowerCase,
-  upperCase : upperCase,
-  ucFirst   : ucFirst,
-  ucWords   : ucWords,
-  convEnum  : convEnum,
-  convCRLF  : convCRLF,
-  unaccent  : unaccent,
-  print     : print,
-  substr    : substr,
-  slice     : substr,
-  padl      : padl,
-  padr      : padr,
-  md5       : md5,
-  prepend   : prepend,
-  html      : html
+  lowerCase: lowerCase,
+  upperCase: upperCase,
+  ucFirst: ucFirst,
+  ucWords: ucWords,
+  convEnum: convEnum,
+  convCRLF: convCRLF,
+  unaccent: unaccent,
+  print: print,
+  substr: substr,
+  slice: substr,
+  padl: padl,
+  padr: padr,
+  md5: md5,
+  prepend: prepend,
+  html: html,
 };
