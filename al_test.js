@@ -55,7 +55,7 @@ const renderConfigs = [
     outputName: "resultPresentationFromODP.pdf",
   },
   {
-    enabled: false,
+    enabled: true,
     templatePath: "../freshtracksback_s4/templates/FreshtracksPresentation.odp",
     options: {
       convertTo: "pptx",
