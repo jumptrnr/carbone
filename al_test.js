@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Import the data
-const data = require("./data.js");
+const data = require("../freshtracksback_s4/templates/test_data.js");
 
 // Check if data is defined
 if (data && data.company_data) {
@@ -44,9 +44,8 @@ const renderConfigs = [
     outputName: "resultReportFromDOCX.docx",
   },
   {
-    enabled: false,
-    templatePath:
-      "../freshtracksback_s4/templates/FreshtracksNewPresentationBulletTest.odp",
+    enabled: true,
+    templatePath: "../freshtracksback_s4/templates/FreshtracksPresentation.odp",
     options: {
       convertTo: "pdf",
       lang: "en-us",
