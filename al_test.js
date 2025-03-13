@@ -31,12 +31,6 @@ const renderConfigs = [
     outputName: "resultFromDOCX.docx",
   },
   {
-    enabled: false,
-    templatePath: "../freshtracksback_s4/templates/FreshtracksAllCompanies.odt",
-    options: { convertTo: "pdf" },
-    outputName: "resultReportFromODT.pdf",
-  },
-  {
     enabled: true,
     templatePath:
       "../freshtracksback_s4/templates/FreshtracksAllCompanies.docx",
@@ -44,7 +38,14 @@ const renderConfigs = [
     outputName: "resultReportFromDOCX.docx",
   },
   {
-    enabled: true,
+    enabled: false,
+    templatePath:
+      "../freshtracksback_s4/templates/FreshtracksAllCompanies.docx",
+    options: { convertTo: "docx" },
+    outputName: "resultReportFromDOCX.docx",
+  },
+  {
+    enabled: false,
     templatePath: "../freshtracksback_s4/templates/FreshtracksPresentation.odp",
     options: {
       convertTo: "pdf",
