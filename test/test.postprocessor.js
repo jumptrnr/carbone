@@ -92,6 +92,28 @@ const createDocxTemplate = (imageData) => {
   return { template, documentXml };
 };
 
+const createHtmlTemplate = (imageData) => {
+  const htmlFile = {
+    name: "template.html",
+    parent: "",
+    data: `<html>
+      <body>
+        <h1>Test Document</h1>
+        <img src="${imageData}" alt="Test Image">
+        <p>This is a test document with an image.</p>
+      </body>
+    </html>`,
+  };
+  var template = {
+    isZipped: false,
+    filename: "template.html",
+    embeddings: [],
+    extension: "html",
+    files: [htmlFile],
+  };
+  return { template, htmlFile };
+};
+
 describe("postprocessor", function () {
   describe("process", function () {
     describe("ODT postprocessing", function () {
@@ -175,7 +197,9 @@ describe("postprocessor", function () {
             true
           );
           helper.assert(
-            `data:image/png;base64,${template.files[2].data.toString("base64")}`,
+            `data:image/png;base64,${template.files[2].data.toString(
+              "base64"
+            )}`,
             PNG_BASE64
           );
           done();
@@ -191,7 +215,9 @@ describe("postprocessor", function () {
             true
           );
           helper.assert(
-            `data:image/png;base64,${template.files[2].data.toString("base64")}`,
+            `data:image/png;base64,${template.files[2].data.toString(
+              "base64"
+            )}`,
             PNG_BASE64
           );
           done();
@@ -208,6 +234,48 @@ describe("postprocessor", function () {
       });
       it("should render error with invalid URL", function (done) {
         const { template } = createDocxTemplate(PNG_INVALID_URL);
+        postprocessor.process(template, {}, {}, function (err) {
+          helper.assert(!!err, true);
+          done();
+        });
+      });
+    });
+    describe("HTML postprocessing", function () {
+      it("should replace img src with base64 data URI", function (done) {
+        const { template, htmlFile } = createHtmlTemplate(PNG_BASE64);
+        postprocessor.process(template, {}, {}, function (err) {
+          helper.assert(!err, true);
+          helper.assert(
+            /src="data:image\/png;base64,/.test(htmlFile.data),
+            true
+          );
+          helper.assert(!htmlFile.data.includes("https://"), true);
+          done();
+        });
+      });
+      it("should replace img src with image from URL", function (done) {
+        const { template, htmlFile } = createHtmlTemplate(PNG_URL);
+        postprocessor.process(template, {}, {}, function (err) {
+          helper.assert(!err, true);
+          helper.assert(
+            /src="data:image\/png;base64,/.test(htmlFile.data),
+            true
+          );
+          helper.assert(!htmlFile.data.includes("https://"), true);
+          done();
+        });
+      });
+      it("should render error if image to fetch is too large", function (done) {
+        const { template } = createHtmlTemplate(PNG_URL);
+        process.env.CARBONE_MAX_IMAGE_URL = "2";
+        postprocessor.process(template, {}, {}, function (err) {
+          helper.assert(!!err, true);
+          process.env.CARBONE_MAX_IMAGE_URL = undefined;
+          done();
+        });
+      });
+      it("should render error with invalid URL", function (done) {
+        const { template } = createHtmlTemplate(PNG_INVALID_URL);
         postprocessor.process(template, {}, {}, function (err) {
           helper.assert(!!err, true);
           done();

@@ -125,79 +125,68 @@ def convert(message):
         outputprops += UnoProps(FilterOptions=fileOption.formatOptions)
     outputurl = unohelper.absolutize(cwd, unohelper.systemPathToFileUrl(fileOption.output) )
 
+    # Get output directory and filename for capturing extracted images
+    output_dir = os.path.dirname(fileOption.output)
+    output_basename = os.path.splitext(os.path.basename(fileOption.output))[0]
+    
+    # Record files in output directory before conversion
+    files_before = set()
+    if os.path.exists(output_dir):
+        files_before = set(os.listdir(output_dir))
+
     try:
-        # List files before conversion for debugging
-        if outputurl.endswith('.html'):
-          output_dir = os.path.dirname(outputurl.replace('file://', ''))
-          sys.stderr.write(f"DEBUG: Output directory: {output_dir}\n")
-          sys.stderr.write(f"DEBUG: Files before conversion: {os.listdir(output_dir)}\n")
-        
         document.storeToURL(outputurl, tuple(outputprops) )
-        
-        # Extract images after HTML conversion
-        extracted_images = {}
-        
-        if outputurl.endswith('.html'):
-          sys.stderr.write(f"DEBUG: Files after conversion: {os.listdir(output_dir)}\n")
-          sys.stderr.write(f"DEBUG: Looking for images in directory: {output_dir}\n")
-          
-          # Look for image files created alongside the HTML
-          for ext in ['*.png', '*.jpg', '*.jpeg', '*.gif']:
-            pattern = os.path.join(output_dir, ext)
-            sys.stderr.write(f"DEBUG: Searching pattern: {pattern}\n")
-            found_files = glob.glob(pattern)
-            sys.stderr.write(f"DEBUG: Found files for {ext}: {found_files}\n")
-            
-            for img_path in found_files:
-              img_name = os.path.basename(img_path)
-              try:
-                with open(img_path, 'rb') as img_file:
-                  img_data = img_file.read()
-                  img_base64 = base64.b64encode(img_data).decode('utf-8')
-                  
-                  # Determine MIME type based on extension
-                  ext_lower = os.path.splitext(img_name)[1].lower()
-                  if ext_lower in ['.jpg', '.jpeg']:
-                    mime_type = 'image/jpeg'
-                  elif ext_lower == '.png':
-                    mime_type = 'image/png'
-                  elif ext_lower == '.gif':
-                    mime_type = 'image/gif'
-                  else:
-                    mime_type = 'image/png'  # default
-                  
-                  extracted_images[img_name] = {
-                    'data': img_base64,
-                    'mime_type': mime_type
-                  }
-                # Remove the original file after extraction
-                os.unlink(img_path)
-                sys.stderr.write(f"DEBUG: Successfully processed and removed {img_name}\n")
-              except Exception as e:
-                sys.stderr.write(f"DEBUG: Error processing {img_name}: {e}\n")
-                pass  # Continue with other images if one fails
-          
-          sys.stderr.write(f"DEBUG: Total extracted images: {len(extracted_images)}\n")
-        
-        # Send response as JSON if we have extracted images, otherwise simple success
-        if extracted_images:
-          response = {
-            'success': True,
-            'extractedImages': extracted_images
-          }
-          send(json.dumps(response))
-        else:
-          send('200')
-          
     except:
         sendErrorOrExit('401') # could not convert document
         document.dispose()
         document.close(True)
         return
 
+    # Capture any new image files created by LibreOffice during conversion
+    extracted_images = {}
+    if os.path.exists(output_dir):
+        files_after = set(os.listdir(output_dir))
+        new_files = files_after - files_before
+        
+        # Look for image files that match the LibreOffice naming pattern
+        for filename in new_files:
+            if (filename.startswith(output_basename + '_html_') and 
+                filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.svg'))):
+                
+                image_path = os.path.join(output_dir, filename)
+                try:
+                    with open(image_path, 'rb') as img_file:
+                        image_data = img_file.read()
+                        image_base64 = base64.b64encode(image_data).decode('utf-8')
+                        
+                        # Determine MIME type based on extension
+                        ext = filename.lower().split('.')[-1]
+                        mime_type = {
+                            'png': 'image/png',
+                            'jpg': 'image/jpeg', 
+                            'jpeg': 'image/jpeg',
+                            'gif': 'image/gif',
+                            'svg': 'image/svg+xml'
+                        }.get(ext, 'image/png')
+                        
+                        extracted_images[filename] = {
+                            'data': image_base64,
+                            'mime': mime_type
+                        }
+                        
+                    # Optionally remove the extracted file since we've captured it
+                    # os.remove(image_path)
+                    
+                except Exception as e:
+                    # If we can't read an image file, continue with others
+                    pass
+
     document.dispose()
     document.close(True)
-    ### Document converted
+    
+    # Send success response with extracted images data
+    response = {'status': '200', 'images': extracted_images}
+    send(json.dumps(response))
 
 
 def listen():

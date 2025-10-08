@@ -1,0 +1,9 @@
+Starting to load Carbone module...
+2025-07-21T18:49:31.650Z carbone Initializing Carbone module
+Data found: with  26  companies
+Calling carbone.render with the following parameters:
+Template Path: ../freshtracksback_s4/templates/FreshTracksFundReportModern.docx
+Options: { convertTo: 'html' }
+DEBUG: onCurrentJobEnd - passing extractedImages: none
+HTML report generated successfully: test/output/resultFromDOCX.html
+All reports generated successfully.

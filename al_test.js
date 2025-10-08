@@ -26,12 +26,27 @@ const renderConfigs = [
   },
   {
     enabled: false,
-    templatePath: "../freshtracksback_s4/templates/FreshTracksFundReport.docx",
+    templatePath:
+      "../freshtracksback_s4/templates/FreshTracksFundReportModern.docx",
     options: { convertTo: "docx" },
     outputName: "resultFromDOCX.docx",
   },
   {
     enabled: true,
+    templatePath:
+      "../freshtracksback_s4/templates/FreshTracksFundReportModern.docx",
+    options: { convertTo: "html" },
+    outputName: "resultFromDOCX.html",
+  },
+  {
+    enabled: false,
+    templatePath:
+      "../freshtracksback_s4/templates/FreshTracksFundReportModern.docx",
+    options: { convertTo: "docx" },
+    outputName: "resultFromDOCX.docx",
+  },
+  {
+    enabled: false,
     templatePath:
       "../freshtracksback_s4/templates/FreshtracksAllCompanies.docx",
     options: { convertTo: "docx" },
@@ -55,7 +70,7 @@ const renderConfigs = [
     outputName: "resultPresentationFromODP.pdf",
   },
   {
-    enabled: true,
+    enabled: false,
     templatePath: "../freshtracksback_s4/templates/FreshtracksPresentation.odp",
     options: {
       convertTo: "pptx",
